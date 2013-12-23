@@ -65,6 +65,10 @@ Sub ShowWaitingForView()
     ChangeView "GTD Waiting for"
 End Sub
 
+Sub ShowSimpleListView()
+    ChangeView "Simple List"
+End Sub
+
 
 Sub ChangeView(viewName)
     Dim objViews As Views
@@ -168,7 +172,11 @@ Sub AddTaskToActionList()
         MsgBox "You need to select a task to execute this command"
         Exit Sub
     End If
-    With selectedTask
+    AddGivenTaskToActionList selectedTask
+End Sub
+
+Sub AddGivenTaskToActionList(task As Outlook.TaskItem)
+    With task
         .Status = olTaskNotStarted
         .StartDate = Now()
         .DueDate = .StartDate
@@ -178,7 +186,6 @@ Sub AddTaskToActionList()
 End Sub
 
 
-
 Sub AddTaskToWaitingList()
     Dim selectedTask As Outlook.TaskItem
     Set selectedTask = GetSelectedTask()
@@ -186,13 +193,18 @@ Sub AddTaskToWaitingList()
         MsgBox "You need to select a task to execute this command"
         Exit Sub
     End If
-    With selectedTask
+    AddGivenTaskToWaitingList selectedTask
+End Sub
+
+Sub AddGivenTaskToWaitingList(task As Outlook.TaskItem)
+    With task
         .Status = olTaskWaiting
         .StartDate = "1/1/4501"
         .DueDate = "1/1/4501"
         .Save
     End With
 End Sub
+
 
 Sub AddTaskToIncubationList()
     Dim selectedTask As Outlook.TaskItem
@@ -201,13 +213,18 @@ Sub AddTaskToIncubationList()
         MsgBox "You need to select a task to execute this command"
         Exit Sub
     End If
-    With selectedTask
+    AddGivenTaskToIncubationList selectedTask
+End Sub
+
+Sub AddGivenTaskToIncubationList(task As Outlook.TaskItem)
+    With task
         .Status = olTaskDeferred
         .StartDate = "1/1/4501"
         .DueDate = "1/1/4501"
         .Save
     End With
 End Sub
+
 
 Sub AddTaskToMasterList()
     Dim selectedTask As Outlook.TaskItem
@@ -216,13 +233,18 @@ Sub AddTaskToMasterList()
         MsgBox "You need to select a task to execute this command"
         Exit Sub
     End If
-    With selectedTask
+    AddGivenTaskToMasterList selectedTask
+End Sub
+
+Sub AddGivenTaskToMasterList(task As Outlook.TaskItem)
+    With task
         .Status = olTaskNotStarted
         .StartDate = "2/2/3000"
         .DueDate = "2/2/3000"
         .Save
     End With
 End Sub
+
 
 Private Function GetSelectedTask() As Outlook.TaskItem
     Dim selected As Outlook.TaskItem
