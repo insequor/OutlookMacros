@@ -298,5 +298,32 @@ Private Function GetSelectedTask() As Outlook.TaskItem
     End If
 End Function
 
-
-
+'
+' Create new Action Item from Selected Task
+'
+Sub CreateNewActionItemFromSelectedTask()
+    Dim selectedTask As Outlook.TaskItem
+    Set selectedTask = GetSelectedTask()
+    If selectedTask Is Nothing Then
+        MsgBox "You need to select a task to execute this command"
+        Exit Sub
+    End If
+    
+    Dim newTask As Outlook.TaskItem
+    Set newTask = CreateItem(olTaskItem)
+     
+    With newTask
+        .Subject = selectedTask.Subject
+        '.StartDate = Now()
+        .Body = .Body & vbCrLf & "=== SOURCE TASK INFORMATION ==="
+        .Body = .Body & vbCrLf & "Subject: " & selectedTask.Subject
+        'This EntyID is automatically updated each time myItem is moved from one folder to another
+        'So it is not a reliable link. We can move the item to the final destination first and then
+        'Start getting the link. This way, at least it is archived it will work
+        .Body = .Body & vbCrLf & "url:outlook:" & selectedTask.EntryID & vbCrLf
+        .Save
+    End With
+    
+    AddGivenTaskToActionList newTask
+    newTask.Display
+End Sub
