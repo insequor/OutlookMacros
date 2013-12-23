@@ -72,6 +72,11 @@ Sub ChangeView(viewName)
   
     Set objViews = Application.ActiveExplorer.CurrentFolder.Views
     Set objView = objViews.Item(viewName)
+    If objView Is Nothing Then
+        MsgBox "This command is valid only in Task folders"
+        Exit Sub
+    End If
+    
     objView.Apply
 End Sub
 
@@ -86,6 +91,15 @@ Sub NewTaskToActionList()
         MsgBox "You need to select a mail to execute this command"
         Exit Sub
     End If
+    
+    Dim newTask As Outlook.TaskItem
+    Set newTask = CreateTaskForMail(selectedMail)
+    If newTask Is Nothing Then
+        MsgBox "Sorry, could not create the task for whatever reason"
+        Exit Sub
+    End If
+    
+    newTask.Display
     
 End Sub
 
@@ -111,6 +125,35 @@ Private Function GetSelectedMail() As Outlook.MailItem
         End If
     End If
 End Function
+
+Private Function CreateTaskForMail(mail As Outlook.MailItem) As Outlook.TaskItem
+    Dim olTsk As Outlook.TaskItem
+    'To Move an item programmatically, this does not help the EntryID problem
+    'Since we get the myItem before moving and it returns us the old EntryID
+    'Set ns = Application.GetNamespace("MAPI")
+    'Dim moveToFolder As Outlook.MAPIFolder
+    'Set moveToFolder = ns.Folders("ozgur.yuksel@lmsintl.com").Folders("Inbox").Folders("Processed")
+    'myItem.Move moveToFolder
+    
+    Set olTsk = CreateItem(olTaskItem)
+     
+    With olTsk
+        .Subject = mail.Subject
+        '.StartDate = Now()
+        .Body = .Body & vbCrLf & "=== SOURCE E-MAIL INFORMATION ==="
+        .Body = .Body & vbCrLf & "Subject: " & mail.Subject
+        .Body = .Body & vbCrLf & "From: " & mail.Sender
+        .Body = .Body & vbCrLf & "To: " & mail.To
+        .Body = .Body & vbCrLf & "Sent on: " & mail.SentOn
+        'This EntyID is automatically updated each time myItem is moved from one folder to another
+        'So it is not a reliable link. We can move the item to the final destination first and then
+        'Start getting the link. This way, at least it is archived it will work
+        .Body = .Body & vbCrLf & "url:outlook:" & mail.EntryID & vbCrLf
+        .Save
+    End With
+    Set CreateTaskForMail = olTsk
+End Function
+
 
 
 
