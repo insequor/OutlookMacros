@@ -102,21 +102,62 @@ Sub NewTaskToActionList()
         MsgBox "Sorry, could not create the task for whatever reason"
         Exit Sub
     End If
-    
+    AddGivenTaskToActionList newTask
     newTask.Display
-    
 End Sub
 
 Sub NewTaskToIncubationList()
-    MsgBox "Suppose to create new task from selected mail and add it to Incubation List"
+    Dim selectedMail As Outlook.MailItem
+    Set selectedMail = GetSelectedMail()
+    If selectedMail Is Nothing Then
+        MsgBox "You need to select a mail to execute this command"
+        Exit Sub
+    End If
+    
+    Dim newTask As Outlook.TaskItem
+    Set newTask = CreateTaskForMail(selectedMail)
+    If newTask Is Nothing Then
+        MsgBox "Sorry, could not create the task for whatever reason"
+        Exit Sub
+    End If
+    AddGivenTaskToIncubationList newTask
+    newTask.Display
 End Sub
 
 Sub NewTaskToMasterList()
-    MsgBox "Suppose to create new task from selected mail and add it to Master List"
+    Dim selectedMail As Outlook.MailItem
+    Set selectedMail = GetSelectedMail()
+    If selectedMail Is Nothing Then
+        MsgBox "You need to select a mail to execute this command"
+        Exit Sub
+    End If
+    
+    Dim newTask As Outlook.TaskItem
+    Set newTask = CreateTaskForMail(selectedMail)
+    If newTask Is Nothing Then
+        MsgBox "Sorry, could not create the task for whatever reason"
+        Exit Sub
+    End If
+    AddGivenTaskToMasterList newTask
+    newTask.Display
 End Sub
 
 Sub NewTaskToWaitingForList()
-    MsgBox "Suppose to create new task from selected mail and add it to Waiting for List"
+    Dim selectedMail As Outlook.MailItem
+    Set selectedMail = GetSelectedMail()
+    If selectedMail Is Nothing Then
+        MsgBox "You need to select a mail to execute this command"
+        Exit Sub
+    End If
+    
+    Dim newTask As Outlook.TaskItem
+    Set newTask = CreateTaskForMail(selectedMail)
+    If newTask Is Nothing Then
+        MsgBox "Sorry, could not create the task for whatever reason"
+        Exit Sub
+    End If
+    AddGivenTaskToWaitingList newTask
+    newTask.Display
 End Sub
 
 Private Function GetSelectedMail() As Outlook.MailItem
