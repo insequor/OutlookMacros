@@ -80,9 +80,9 @@ End Sub
 ' NEW TASK FROM MAIL COMMANDS
 '
 Sub NewTaskToActionList()
-    Dim selectedMAil As Outlook.MailItem
-    Set selecteMail = GetSelectedMail()
-    If selectedMAil Is Nothing Then
+    Dim selectedMail As Outlook.MailItem
+    Set selectedMail = GetSelectedMail()
+    If selectedMail Is Nothing Then
         MsgBox "You need to select a mail to execute this command"
         Exit Sub
     End If
@@ -107,7 +107,7 @@ Private Function GetSelectedMail() As Outlook.MailItem
         Set selectedItem = ActiveExplorer.Selection.Item(1)
         If (TypeOf selectedItem Is Outlook.MailItem) Then
             Set selected = selectedItem
-            GetSelectedMail = selected
+            Set GetSelectedMail = selected
         End If
     End If
 End Function
@@ -120,7 +120,7 @@ End Function
 
 Sub AddTaskToActionList()
     Dim selectedTask As Outlook.TaskItem
-    Set selecteTask = GetSelectedTask()
+    Set selectedTask = GetSelectedTask()
     If selectedTask Is Nothing Then
         MsgBox "You need to select a task to execute this command"
         Exit Sub
@@ -138,7 +138,7 @@ End Sub
 
 Sub AddTaskToWaitingList()
     Dim selectedTask As Outlook.TaskItem
-    Set selecteTask = GetSelectedTask()
+    Set selectedTask = GetSelectedTask()
     If selectedTask Is Nothing Then
         MsgBox "You need to select a task to execute this command"
         Exit Sub
@@ -153,7 +153,7 @@ End Sub
 
 Sub AddTaskToIncubationList()
     Dim selectedTask As Outlook.TaskItem
-    Set selecteTask = GetSelectedTask()
+    Set selectedTask = GetSelectedTask()
     If selectedTask Is Nothing Then
         MsgBox "You need to select a task to execute this command"
         Exit Sub
@@ -168,7 +168,7 @@ End Sub
 
 Sub AddTaskToMasterList()
     Dim selectedTask As Outlook.TaskItem
-    Set selecteTask = GetSelectedTask()
+    Set selectedTask = GetSelectedTask()
     If selectedTask Is Nothing Then
         MsgBox "You need to select a task to execute this command"
         Exit Sub
@@ -187,7 +187,7 @@ Private Function GetSelectedTask() As Outlook.TaskItem
         Set selectedItem = ActiveExplorer.Selection.Item(1)
         If (TypeOf selectedItem Is Outlook.TaskItem) Then
             Set selected = selectedItem
-            GetSelectedTask = selected
+            Set GetSelectedTask = selected
         End If
     End If
 End Function
