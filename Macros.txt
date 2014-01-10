@@ -22,21 +22,6 @@ Sub ShowSimpleListView()
 End Sub
 
 
-Sub ChangeView(viewName)
-    Dim objViews As Views
-    Dim objView As View
-  
-    Set objViews = Application.ActiveExplorer.CurrentFolder.Views
-    Set objView = objViews.Item(viewName)
-    If objView Is Nothing Then
-        MsgBox "This command is valid only in Task folders"
-        Exit Sub
-    End If
-    
-    objView.Apply
-End Sub
-
-
 '
 ' NEW TASK FROM MAIL COMMANDS
 '
@@ -112,6 +97,145 @@ Sub NewTaskToWaitingForList()
     newTask.Display
 End Sub
 
+'
+' MOVE EXISTING TASK COMMANDS
+'
+Sub AddTaskToActionList()
+    Dim selectedTask As Outlook.TaskItem
+    Set selectedTask = GetSelectedTask()
+    If selectedTask Is Nothing Then
+        MsgBox "You need to select a task to execute this command"
+        Exit Sub
+    End If
+    AddGivenTaskToActionList selectedTask
+End Sub
+
+Sub AddTaskToWaitingList()
+    Dim selectedTask As Outlook.TaskItem
+    Set selectedTask = GetSelectedTask()
+    If selectedTask Is Nothing Then
+        MsgBox "You need to select a task to execute this command"
+        Exit Sub
+    End If
+    AddGivenTaskToWaitingList selectedTask
+End Sub
+
+Sub AddTaskToIncubationList()
+    Dim selectedTask As Outlook.TaskItem
+    Set selectedTask = GetSelectedTask()
+    If selectedTask Is Nothing Then
+        MsgBox "You need to select a task to execute this command"
+        Exit Sub
+    End If
+    AddGivenTaskToIncubationList selectedTask
+End Sub
+
+Sub AddTaskToMasterList()
+    Dim selectedTask As Outlook.TaskItem
+    Set selectedTask = GetSelectedTask()
+    If selectedTask Is Nothing Then
+        MsgBox "You need to select a task to execute this command"
+        Exit Sub
+    End If
+    AddGivenTaskToMasterList selectedTask
+End Sub
+
+'
+' INTERNAL METHODS
+'
+Sub AddGivenTaskToActionList(task As Outlook.TaskItem)
+    With task
+        .Status = olTaskNotStarted
+        .StartDate = Now()
+        .DueDate = .StartDate
+        .ReminderSet = False
+        .Save
+    End With
+End Sub
+
+
+Sub AddGivenTaskToWaitingList(task As Outlook.TaskItem)
+    With task
+        .Status = olTaskWaiting
+        .StartDate = "1/1/4501"
+        .DueDate = "1/1/4501"
+        .Save
+    End With
+End Sub
+
+Sub AddGivenTaskToIncubationList(task As Outlook.TaskItem)
+    With task
+        .Status = olTaskDeferred
+        .StartDate = "1/1/4501"
+        .DueDate = "1/1/4501"
+        .Save
+    End With
+End Sub
+
+Sub AddGivenTaskToMasterList(task As Outlook.TaskItem)
+    With task
+        .Status = olTaskNotStarted
+        .StartDate = "2/2/3000"
+        .DueDate = "2/2/3000"
+        .Save
+    End With
+End Sub
+
+Private Function GetSelectedTask() As Outlook.TaskItem
+    Dim selected As Outlook.TaskItem
+    If ActiveExplorer.Selection.Count > 0 Then
+        Set selectedItem = ActiveExplorer.Selection.Item(1)
+        If (TypeOf selectedItem Is Outlook.TaskItem) Then
+            Set selected = selectedItem
+            Set GetSelectedTask = selected
+        End If
+    End If
+End Function
+
+
+Sub CreateNewActionItemFromSelectedTask()
+    Dim selectedTask As Outlook.TaskItem
+    Set selectedTask = GetSelectedTask()
+    If selectedTask Is Nothing Then
+        MsgBox "You need to select a task to execute this command"
+        Exit Sub
+    End If
+    
+    Dim newTask As Outlook.TaskItem
+    Set newTask = CreateItem(olTaskItem)
+     
+    With newTask
+        .Subject = selectedTask.Subject
+        '.StartDate = Now()
+        .Body = .Body & vbCrLf & "=== SOURCE TASK INFORMATION ==="
+        .Body = .Body & vbCrLf & "Subject: " & selectedTask.Subject
+        'This EntyID is automatically updated each time myItem is moved from one folder to another
+        'So it is not a reliable link. We can move the item to the final destination first and then
+        'Start getting the link. This way, at least it is archived it will work
+        .Body = .Body & vbCrLf & "url:outlook:" & selectedTask.EntryID & vbCrLf
+        .Save
+    End With
+    
+    AddGivenTaskToActionList newTask
+    newTask.Display
+End Sub
+
+
+Sub ChangeView(viewName)
+    Dim objViews As Views
+    Dim objView As View
+  
+    Set objViews = Application.ActiveExplorer.CurrentFolder.Views
+    Set objView = objViews.Item(viewName)
+    If objView Is Nothing Then
+        MsgBox "This command is valid only in Task folders"
+        Exit Sub
+    End If
+    
+    objView.Apply
+End Sub
+
+
 Private Function GetSelectedMail() As Outlook.MailItem
     Dim selected As Outlook.MailItem
     If ActiveExplorer.Selection.Count > 0 Then
@@ -151,131 +275,3 @@ Private Function CreateTaskForMail(mail As Outlook.MailItem) As Outlook.TaskItem
     Set CreateTaskForMail = olTsk
 End Function
 
-
-
-
-'
-' MOVE EXISTING TASK COMMANDS
-'
-
-Sub AddTaskToActionList()
-    Dim selectedTask As Outlook.TaskItem
-    Set selectedTask = GetSelectedTask()
-    If selectedTask Is Nothing Then
-        MsgBox "You need to select a task to execute this command"
-        Exit Sub
-    End If
-    AddGivenTaskToActionList selectedTask
-End Sub
-
-Sub AddGivenTaskToActionList(task As Outlook.TaskItem)
-    With task
-        .Status = olTaskNotStarted
-        .StartDate = Now()
-        .DueDate = .StartDate
-        .ReminderSet = False
-        .Save
-    End With
-End Sub
-
-
-Sub AddTaskToWaitingList()
-    Dim selectedTask As Outlook.TaskItem
-    Set selectedTask = GetSelectedTask()
-    If selectedTask Is Nothing Then
-        MsgBox "You need to select a task to execute this command"
-        Exit Sub
-    End If
-    AddGivenTaskToWaitingList selectedTask
-End Sub
-
-Sub AddGivenTaskToWaitingList(task As Outlook.TaskItem)
-    With task
-        .Status = olTaskWaiting
-        .StartDate = "1/1/4501"
-        .DueDate = "1/1/4501"
-        .Save
-    End With
-End Sub
-
-
-Sub AddTaskToIncubationList()
-    Dim selectedTask As Outlook.TaskItem
-    Set selectedTask = GetSelectedTask()
-    If selectedTask Is Nothing Then
-        MsgBox "You need to select a task to execute this command"
-        Exit Sub
-    End If
-    AddGivenTaskToIncubationList selectedTask
-End Sub
-
-Sub AddGivenTaskToIncubationList(task As Outlook.TaskItem)
-    With task
-        .Status = olTaskDeferred
-        .StartDate = "1/1/4501"
-        .DueDate = "1/1/4501"
-        .Save
-    End With
-End Sub
-
-
-Sub AddTaskToMasterList()
-    Dim selectedTask As Outlook.TaskItem
-    Set selectedTask = GetSelectedTask()
-    If selectedTask Is Nothing Then
-        MsgBox "You need to select a task to execute this command"
-        Exit Sub
-    End If
-    AddGivenTaskToMasterList selectedTask
-End Sub
-
-Sub AddGivenTaskToMasterList(task As Outlook.TaskItem)
-    With task
-        .Status = olTaskNotStarted
-        .StartDate = "2/2/3000"
-        .DueDate = "2/2/3000"
-        .Save
-    End With
-End Sub
-
-
-Private Function GetSelectedTask() As Outlook.TaskItem
-    Dim selected As Outlook.TaskItem
-    If ActiveExplorer.Selection.Count > 0 Then
-        Set selectedItem = ActiveExplorer.Selection.Item(1)
-        If (TypeOf selectedItem Is Outlook.TaskItem) Then
-            Set selected = selectedItem
-            Set GetSelectedTask = selected
-        End If
-    End If
-End Function
-
-'
-' Create new Action Item from Selected Task
-'
-Sub CreateNewActionItemFromSelectedTask()
-    Dim selectedTask As Outlook.TaskItem
-    Set selectedTask = GetSelectedTask()
-    If selectedTask Is Nothing Then
-        MsgBox "You need to select a task to execute this command"
-        Exit Sub
-    End If
-    
-    Dim newTask As Outlook.TaskItem
-    Set newTask = CreateItem(olTaskItem)
-     
-    With newTask
-        .Subject = selectedTask.Subject
-        '.StartDate = Now()
-        .Body = .Body & vbCrLf & "=== SOURCE TASK INFORMATION ==="
-        .Body = .Body & vbCrLf & "Subject: " & selectedTask.Subject
-        'This EntyID is automatically updated each time myItem is moved from one folder to another
-        'So it is not a reliable link. We can move the item to the final destination first and then
-        'Start getting the link. This way, at least it is archived it will work
-        .Body = .Body & vbCrLf & "url:outlook:" & selectedTask.EntryID & vbCrLf
-        .Save
-    End With
-    
-    AddGivenTaskToActionList newTask
-    newTask.Display
-End Sub
