@@ -33,19 +33,6 @@ Sub Test()
 End Sub
 
 
-Sub Sandbox()
-    Dim selectedTask As Outlook.TaskItem
-    Set selectedTask = ActiveExplorer.Selection.Item(1)
-    If selectedTask Is Nothing Then
-        MsgBox "You need to select a task to execute this command"
-        Exit Sub
-    End If
-    
-    MsgBox selectedTask.DueDate
-    
-End Sub
-
-
 '
 ' VIEW COMMANDS
 '
