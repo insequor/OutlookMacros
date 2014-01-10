@@ -145,10 +145,10 @@ End Sub
 '
 Sub AddGivenTaskToActionList(task As Outlook.TaskItem)
     With task
+        'TODO: Here status should change only if current status is deferred or waiting
         .Status = olTaskNotStarted
         .StartDate = Now()
         .DueDate = .StartDate
-        .ReminderSet = False
         .Save
     End With
 End Sub
@@ -157,8 +157,6 @@ End Sub
 Sub AddGivenTaskToWaitingList(task As Outlook.TaskItem)
     With task
         .Status = olTaskWaiting
-        .StartDate = "1/1/4501"
-        .DueDate = "1/1/4501"
         .Save
     End With
 End Sub
@@ -166,17 +164,16 @@ End Sub
 Sub AddGivenTaskToIncubationList(task As Outlook.TaskItem)
     With task
         .Status = olTaskDeferred
-        .StartDate = "1/1/4501"
-        .DueDate = "1/1/4501"
         .Save
     End With
 End Sub
 
 Sub AddGivenTaskToMasterList(task As Outlook.TaskItem)
     With task
+        'TODO: Here status should change only if current status is deferred or waiting
         .Status = olTaskNotStarted
-        .StartDate = "2/2/3000"
-        .DueDate = "2/2/3000"
+        .StartDate = "1/1/4501"
+        .DueDate = .StartDate
         .Save
     End With
 End Sub
