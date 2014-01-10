@@ -1,38 +1,3 @@
-Sub Test()
-    Dim myItem As Outlook.MailItem
-    Dim olTsk As Outlook.TaskItem
-    
-    Set myItem = ActiveExplorer.Selection.Item(1)
-    
-    'To Move an item programmatically, this does not help the EntryID problem
-    'Since we get the myItem before moving and it returns us the old EntryID
-    'Set ns = Application.GetNamespace("MAPI")
-    'Dim moveToFolder As Outlook.MAPIFolder
-    'Set moveToFolder = ns.Folders("ozgur.yuksel@lmsintl.com").Folders("Inbox").Folders("Processed")
-    'myItem.Move moveToFolder
-    
-    Set olTsk = CreateItem(olTaskItem)
-     
-    With olTsk
-        .Subject = myItem.Subject
-        '.StartDate = Now()
-        .Body = .Body & vbCrLf & "=== SOURCE E-MAIL INFORMATION ==="
-        .Body = .Body & vbCrLf & "Subject: " & myItem.Subject
-        .Body = .Body & vbCrLf & "From: " & myItem.Sender
-        .Body = .Body & vbCrLf & "To: " & myItem.To
-        .Body = .Body & vbCrLf & "Sent on: " & myItem.SentOn
-        'This EntyID is automatically updated each time myItem is moved from one folder to another
-        'So it is not a reliable link. We can move the item to the final destination first and then
-        'Start getting the link. This way, at least it is archived it will work
-        .Body = .Body & vbCrLf & "url:outlook:" & myItem.EntryID & vbCrLf
-        .Save
-    End With
-     
-    Set myItem = Nothing
-    olTsk.Display
-End Sub
-
-
 '
 ' VIEW COMMANDS
 '
